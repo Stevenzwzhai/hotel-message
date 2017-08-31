@@ -1,0 +1,395 @@
+<template>
+    <view class="co-goods-list">
+        <scroll-view scroll-y class="scroll-list" @touchend="endTouch" scroll-with-animation="true" @scrolltoupper="pulldown" @scrolltolower="pullup" @scroll="scroll" scroll-into-view="{{toView}}" scroll-top="{{scrollTop}}">
+            <view class="pulldown">
+                {{currentScTop <= 15 ? '松开刷新' : '下拉刷新'}}
+            </view>
+            <view id="pulldown"></view>
+            <repeat for="{{goodsList}}" index="index" item="item" key="key">
+                <view id="goodsItem" class="goodsItem">
+                    <image src="../../../static/images/ic_goods_blue.png" lazyload="true"></image>
+                    <view class="goods-info">
+                        <text class="goods-name">{{item.name}}</text>
+                        <view>
+                            <text class="goods-sale-price">
+                                ¥<text>{{item.discount}}</text>
+                            </text>
+                            <text class="goods-price">¥{{item.price}}</text>
+                        </view>
+                        <view class="buy-goods">
+                            <view class="add-car {{item.isAdd ? '' : 'hide'}}" @tap="addCar({{item}}, {{index}})">
+                                <image src="../../../../static/images/add-car.jpg"></image>
+                            </view>
+                            <view class="add-num {{item.isAdd ? 'hide' : ''}}">
+                                <image src="../../../../static/images/add-num.jpg" @tap="addNum({{item}}, {{index}})"></image>
+                                <view class="current-num">{{item.nums}}</view>
+                                <image src="../../../../static/images/cancle-num.jpg" @tap="cancleNum({{item}}, {{index}})"></image>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </repeat>
+            <view class="pullup">
+                {{(itemHeight*goodsList.length - scrollHeight - currentScTop) <= 15 ? '松开加载' : '加载更多'}}
+            </view>
+        </scroll-view>
+        <view class="co-home-add-goods {{showBottom ? '' : 'hide'}}">
+            <view class="left">
+                <view class="nums">数量：{{allNums}}</view>
+                <view class="money">¥<view> {{allMoney}}</view></view>
+            </view>
+            <view class="right">加入购入车</view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+
+    export default class extends wepy.component {
+        data = {
+            toView: 'green',
+            scrollTop: 50,
+            goodsList: [{
+                price:12,
+                discount:11,
+                nums:0,
+                name:'得力钱包'
+            },{
+                price:12,
+                discount:11,
+                nums:0,
+                name:'得力钱包'
+            },{
+                price:12,
+                discount:11,
+                nums:0,
+                name:'得力钱包'
+            },{
+                price:12,
+                discount:11,
+                nums:0,
+                name:'得力钱包'
+            },{
+                price:12,
+                discount:11,
+                nums:0,
+                name:'得力钱包'
+            },{
+                price:12,
+                discount:11,
+                nums:0,
+                name:'得力钱包'
+            }],
+            pulldownEnd: false,
+            currentScTop: 50,
+            pulldownTimer: '',
+            upper:true,
+            scrollHeight: 0,
+            isPull:false,
+            goodsNums:null,
+            showBottom:false
+        }
+
+        props = {
+            itemHeight: Number
+        }
+
+        computed = {
+            allNums() {
+                let allNums = 0;
+                this.goodsList.forEach(item => {
+                    allNums+=Number(item.nums)
+                })
+                console.log('b:'+allNums)
+                this.goodsNums = allNums
+                console.log('c:'+this.goodsNums)
+                return allNums
+            },
+            allMoney() {
+                let allMoney = 0
+                this.goodsList.forEach(item => {
+                    allMoney+=Number(item.discount*item.nums)
+                })
+                return wepy.formatMoney(allMoney)
+            }
+        }
+        //只能监听data中数据
+        watch = {
+            goodsNums(val) {
+                console.log('a:'+val)
+                this.showBottom = val>0
+            }
+        }
+
+        events = {
+            setHeight: (obj) => {
+                this.itemHeight = obj.height
+                console.log(this.itemHeight)
+            }
+        }
+
+        onLoad(){
+            let self = this;
+            wx.createSelectorQuery().select('.scroll-list').fields({
+                size: true
+            }, function (res) {
+
+                self.scrollHeight = res.height
+            }).exec()
+
+            this.goodsList = this.goodsList.map((item) => {
+                item.isAdd = true
+                return item
+            })
+        }
+
+        methods = {
+            pulldown: function (e) {
+                this.setCurrentScrollTop()
+                this.resetScrollTop()
+                this.upper = true
+                this.isPull = true
+            },
+            pullup: function (e) {
+                this.upper = false
+                this.isPull = true
+                setTimeout(() => {
+                    this.setCurrentScrollBottom()
+                    this.resetScrollBottom()
+                }, 100)
+            },
+            scroll: function (e) {
+//                console.log(e)
+            },
+            endTouch () {
+                if(!this.isPull){
+                    return
+                }
+                this.pulldownEnd = true
+                this.upper ? this.resetScrollTop() : this.resetScrollBottom()
+            },
+            addCar(item, index) {
+                this.goodsList[+index].isAdd = false
+            },
+            cancleNum(item, index) {
+                if(this.goodsList[+index].nums == 0) {
+                    return
+                }
+                this.goodsList[+index].nums--
+            },
+            addNum(item, index) {
+                this.goodsList[+index].nums++
+            }
+        }
+
+        resetScrollTop () {
+            if(this.pulldownEnd && (this.currentScTop <= 15)) {
+                this.setCurrentScrollTop()
+                this.scrollTop = this.currentScTop
+                this.pulldownEnd = false
+                setTimeout(() => {
+                    console.log('refresh success')
+                    this.scrollTop = 50
+                    setTimeout(() => {
+                        this.currentScTop = 50
+                        this.$apply()
+                    })
+                    this.$apply()
+                }, 2000)
+            } else if (this.pulldownEnd) {
+                //如果没满足条件就松开那么滚回原处
+                this.scrollTop = Number(this.currentScTop)
+                this.pulldownEnd = false
+                setTimeout(() => {
+                    this.scrollTop = 50
+                    this.$apply()
+                })
+            }
+        }
+
+        resetScrollBottom () {
+            console.log(this.itemHeight*this.goodsList.length - this.scrollHeight - this.currentScTop + 100)
+            if (this.pulldownEnd && this.itemHeight*this.goodsList.length + 100 - this.scrollHeight - this.currentScTop  <= 15) {
+                this.setCurrentScrollBottom()
+                this.scrollTop = this.currentScTop
+                this.pulldownEnd = false
+                setTimeout(() => {
+                    console.log('refresh success')
+                    this.scrollTop = this.itemHeight*this.goodsList.length - this.scrollHeight+50
+                    setTimeout(() => {
+                        this.currentScTop = this.itemHeight*this.goodsList.length - this.scrollHeight+50
+                        this.$apply()
+                    })
+                    this.$apply()
+                }, 2000)
+            } else if (this.pulldownEnd) {
+                //如果没满足条件就松开那么滚回原处
+                console.log('sdf', this.currentScTop)
+                this.scrollTop = Number(this.currentScTop)
+                this.pulldownEnd = false
+                setTimeout(() => {
+                    this.scrollTop = this.itemHeight*this.goodsList.length - this.scrollHeight+50
+                    this.$apply()
+                })
+            }
+        }
+
+        setCurrentScrollBottom () {
+            let self = this
+            wx.createSelectorQuery().select('.scroll-list').fields({
+                scrollOffset: true
+            }, function (res) {
+                self.currentScTop = res.scrollTop
+            }).exec()
+        }
+
+        setCurrentScrollTop () {
+            let self = this
+            wx.createSelectorQuery().select('.scroll-list').fields({
+                scrollOffset: true
+            }, function (res) {
+                console.log(res.scrollTop)
+                self.currentScTop = res.scrollTop
+            }).exec()
+        }
+    }
+</script>
+
+<style lang="less">
+    .co-goods-list {
+        background-color: #fff;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 320rpx;
+        padding-bottom: 320rpx;
+        font-size: 28rpx;
+
+        .hide{
+            display:none !important;
+        }
+        .scroll-list {
+            height: 100%;
+            background-color: #fff;
+            .goodsItem {
+                height: 316rpx;
+                border-bottom:2rpx solid #DEDEDE;
+                margin: 0 28rpx;
+                display: flex;
+                position:relative;
+
+                image {
+                    width: 274rpx;
+                    height: 274rpx;
+                    margin-top: 26rpx;
+                    margin-left: 8rpx;
+                }
+                .goods-info {
+                    margin-top: 42rpx;
+                    margin-left: 26rpx;
+                    .goods-name {
+                        font-size: 28rpx;
+                        color: #3E3E3E;
+                        letter-spacing: 0.34rpx;
+                    }
+                    .goods-sale-price {
+                        color: #fd504a;
+                        text {
+                            font-size: 36rpx;
+                            letter-spacing: 0.34rpx;
+                            line-height: 34rpx;
+                        }
+                    }
+                    .goods-price {
+                        font-size: 28rpx;
+                        color: #B7B7B7;
+                        letter-spacing: 0.34rpx;
+                        margin-left: 24rpx;
+                    }
+                }
+                .buy-goods{
+                    text-align:right;
+                    position:absolute;
+                    right:30rpx;
+                    bottom:30rpx;
+
+                    image{
+                        height:64rpx;
+                        width:64rpx;
+                        margin-left:0;
+                    }
+                    .add-car{
+                        width:100rpx;
+                        text-align:center;
+                        display:inline-block;
+                        margin-top:0;
+
+                    }
+                    .add-num{
+                        .current-num{
+                            display:inline-block;
+                            height:64rpx;
+                            width:64rpx;
+                            text-align:center;
+                            vertical-align: middle;
+                            font-size: 28rpx;
+                            color: #686868;
+                            letter-spacing: 0.34rpx;
+                        }
+                    }
+                }
+
+            }
+
+            .pullup, .pulldown {
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #EDF2F5;
+            }
+        }
+        .co-home-add-goods{
+            height:100rpx;
+            position:absolute;
+            display:flex;
+            flex-flow:row;
+            flex-wrap:nowrap;
+            color:#fff;
+            bottom:320rpx;
+            .left{
+                width:470rpx;
+                background-color: #4A4A4A;
+                display:flex;
+                align-items: center;
+                font-size: 28rpx;
+                .nums{
+                    letter-spacing: 0;
+                    line-height: 34rpx;
+                    margin-left:36rpx;
+                }
+                .money{
+                    margin-left:100rpx;
+                    view{
+                        font-size: 36rpx;
+                        letter-spacing: 0.34rpx;
+                        line-height: 34rpx;
+                        display:inline-block;
+                        margin-left:3rpx;
+                    }
+                }
+            }
+            .right{
+                width:280rpx;
+                background-color:#FFB832;
+                font-size: 32rpx;
+                letter-spacing: 0;
+                line-height: 32rpx;
+                display:flex;
+                align-items:center;
+                justify-content: center;
+            }
+        }
+    }
+</style>

@@ -1,0 +1,64 @@
+
+    <view class="co-home">
+        
+    <view class="co-goods-search">
+        <input placeholder="搜索商品" confirm-type="search" placeholder-class="input-place"/>
+    </view>
+
+        
+    <view class="co-goods-header">
+        <block wx:for="{{$coHeader$catalog}}" wx:for-index="$coHeader$index" wx:for-item="$coHeader$item" wx:key="$coHeader$key">
+            <view class="catalog-list">
+                <view class="list-img">
+                    <image src="{{$coHeader$item.icon}}" binderror="$coHeader$dealErr" bindload="$coHeader$dealLoad"/>
+                </view>
+                <rich-text>{{$coHeader$item.name}}</rich-text>
+            </view>
+        </block>
+    </view>
+
+        
+    <view class="co-goods-list">
+        <scroll-view scroll-y class="scroll-list" bindtouchend="$coList$endTouch" scroll-with-animation="true" bindscrolltoupper="$coList$pulldown" bindscrolltolower="$coList$pullup" bindscroll="$coList$scroll" scroll-into-view="{{$coList$toView}}" scroll-top="{{$coList$scrollTop}}">
+            <view class="pulldown">
+                {{$coList$currentScTop <= 15 ? '松开刷新' : '下拉刷新'}}
+            </view>
+            <view id="pulldown"/>
+            <block wx:for="{{$coList$goodsList}}" wx:for-index="$coList$index" wx:for-item="$coList$item" wx:key="$coList$key">
+                <view id="goodsItem" class="goodsItem">
+                    <image src="../../../static/images/ic_goods_blue.png" lazyload="true"/>
+                    <view class="goods-info">
+                        <text class="goods-name">{{$coList$item.name}}</text>
+                        <view>
+                            <text class="goods-sale-price">
+                                ¥<text>{{$coList$item.discount}}</text>
+                            </text>
+                            <text class="goods-price">¥{{$coList$item.price}}</text>
+                        </view>
+                        <view class="buy-goods">
+                            <view class="add-car {{$coList$item.isAdd ? '' : 'hide'}}" bindtap="$coList$addCar" data-wepy-params-a="{{$coList$item}}" data-wepy-params-b="{{$coList$index}}">
+                                <image src="../../../../static/images/add-car.jpg"/>
+                            </view>
+                            <view class="add-num {{$coList$item.isAdd ? 'hide' : ''}}">
+                                <image src="../../../../static/images/add-num.jpg" bindtap="$coList$addNum" data-wepy-params-a="{{$coList$item}}" data-wepy-params-b="{{$coList$index}}"/>
+                                <view class="current-num">{{$coList$item.nums}}</view>
+                                <image src="../../../../static/images/cancle-num.jpg" bindtap="$coList$cancleNum" data-wepy-params-a="{{$coList$item}}" data-wepy-params-b="{{$coList$index}}"/>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </block>
+            <view class="pullup">
+                {{($coList$itemHeight*$coList$goodsList.length - $coList$scrollHeight - $coList$currentScTop) <= 15 ? '松开加载' : '加载更多'}}
+            </view>
+        </scroll-view>
+        <view class="co-home-add-goods {{$coList$showBottom ? '' : 'hide'}}">
+            <view class="left">
+                <view class="nums">数量：{{$coList$allNums}}</view>
+                <view class="money">¥<view> {{$coList$allMoney}}</view></view>
+            </view>
+            <view class="right">加入购入车</view>
+        </view>
+    </view>
+
+    </view>

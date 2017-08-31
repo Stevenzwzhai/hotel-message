@@ -1,0 +1,299 @@
+参数说明
+img	String	可选*	提示的图片，网络地址或base64
+imgClassName	String	否	自定义图片样式时使用的class
+imgMode	String	否	参考小程序image组件mode属性
+title	String	可选*	提示的内容
+titleClassName	String	否	自定义内容样式时使用的class
+duration	Number	否	提示的持续时间，默认1500毫秒
+success	Function	否	提示即将隐藏时的回调函数
+fail	Function	否	调用过程抛出错误时的回调函数
+complete	Function	否	调用结束时的回调函数
+
+
+<template>
+    <view class="co-goods-list">
+        <scroll-view scroll-y class="scroll-list" @touchend="endTouch" scroll-with-animation="true"
+                     @scrolltoupper="pulldown" @scrolltolower="pullup" @scroll="scroll" scroll-into-view="{{toView}}"
+                     scroll-top="{{scrollTop}}">
+            <view class="pulldown">
+                {{currentScTop <= 15 ? '松开刷新' : '下拉刷新'}}
+            </view>
+            <view id="pulldown"></view>
+            <repeat for="{{goodsList}}" index="index" item="item" key="key">
+                <view id="goodsItem" class="goodsItem">
+                    <image src="../../../static/images/ic_goods_blue.png" lazyload="true"></image>
+                    <view class="goods-info">
+                        <text class="goods-name">得力PU皮面商务记事本</text>
+                        <view>
+                            <text class="goods-sale-price">
+                                ¥<text>32</text>
+                            </text>
+                            <text class="goods-price">¥42</text>
+                        </view>
+                        <view class="buy-goods">
+                            <view class="add-car {{item.isAdd ? '' : 'hide'}}" @tap="addCar({{item}}, {{index}})">
+                                <image src="../../../../static/images/add-car.jpg"></image>
+                            </view>
+                            <view class="add-num {{item.isAdd ? 'hide' : ''}}">
+                                <image src="../../../../static/images/add-num.jpg" @tap="addNum({{item}}, {{index}})"></image>
+                                <view class="current-num">{{item.currentNum}}</view @tap="cancleNum({{item}}, {{index}})">
+                                <image src="../../../../static/images/cancle-num.jpg"></image>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </repeat>
+            <view class="pullup">
+                {{(itemHeight*goodsList.length - scrollHeight - currentScTop) <= 15 ? '松开加载' : '加载更多'}}
+            </view>
+        </scroll-view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+
+    export default class extends wepy.component {
+
+        config = {}
+
+        data = {
+            toView: 'green',
+            scrollTop: 50,
+            goodsList: ['1', 'yellow', 'blue', 'green', 'red', 'red', '3', '4', '5'],
+            pulldownEnd: false,
+            currentScTop: 50,
+            pulldownTimer: '',
+            upper:true,
+            scrollHeight: 0,
+            isPull:false
+        }
+
+        props = {
+            itemHeight: Number
+        }
+
+        events = {
+            setHeight: (obj) => {
+                this.itemHeight = obj.height
+                console.log(this.itemHeight)
+            }
+        }
+
+        onLoad(){
+            let self = this;
+            wx.createSelectorQuery().select('.scroll-list').fields({
+                size: true
+            }, function (res) {
+
+                self.scrollHeight = res.height
+            }).exec()
+
+            this.goodsList = this.goodsList.map((item) => {
+                return {
+                    name: item,
+                    currentNum: 1,
+                    isAdd: true
+                }
+            })
+        }
+
+        methods = {
+            pulldown: function (e) {
+                this.setCurrentScrollTop()
+                this.resetScrollTop()
+                this.upper = true
+                this.isPull = true
+            },
+            pullup: function (e) {
+                this.upper = false
+                this.isPull = true
+                setTimeout(() => {
+                    this.setCurrentScrollBottom()
+                    this.resetScrollBottom()
+                }, 100)
+            },
+            scroll: function (e) {
+//                console.log(e)
+            },
+            endTouch () {
+                if(!this.isPull){
+                    return
+                }
+                this.pulldownEnd = true
+                this.upper ? this.resetScrollTop() : this.resetScrollBottom()
+            },
+            addCar(item, index) {
+                console.log(item, index)
+                this.goodsList[+index].isAdd = false
+            }
+        }
+
+        resetScrollTop () {
+            if(this.pulldownEnd && (this.currentScTop <= 15)) {
+                this.setCurrentScrollTop()
+                this.scrollTop = this.currentScTop
+                this.pulldownEnd = false
+                setTimeout(() => {
+                    console.log('refresh success')
+                    this.scrollTop = 50
+                    setTimeout(() => {
+                        this.currentScTop = 50
+                        this.$apply()
+                    })
+                    this.$apply()
+                }, 2000)
+            } else if (this.pulldownEnd) {
+                //如果没满足条件就松开那么滚回原处
+                this.scrollTop = Number(this.currentScTop)
+                this.pulldownEnd = false
+                setTimeout(() => {
+                    this.scrollTop = 50
+                    this.$apply()
+                })
+            }
+        }
+
+        resetScrollBottom () {
+            console.log(this.itemHeight*this.goodsList.length - this.scrollHeight - this.currentScTop + 100)
+            if (this.pulldownEnd && this.itemHeight*this.goodsList.length + 100 - this.scrollHeight - this.currentScTop  <= 15) {
+                this.setCurrentScrollBottom()
+                this.scrollTop = this.currentScTop
+                this.pulldownEnd = false
+                setTimeout(() => {
+                    console.log('refresh success')
+                    this.scrollTop = this.itemHeight*this.goodsList.length - this.scrollHeight+50
+                    setTimeout(() => {
+                        this.currentScTop = this.itemHeight*this.goodsList.length - this.scrollHeight+50
+                        this.$apply()
+                    })
+                    this.$apply()
+                }, 2000)
+            } else if (this.pulldownEnd) {
+                //如果没满足条件就松开那么滚回原处
+                console.log('sdf', this.currentScTop)
+                this.scrollTop = Number(this.currentScTop)
+                this.pulldownEnd = false
+                setTimeout(() => {
+                    this.scrollTop = this.itemHeight*this.goodsList.length - this.scrollHeight+50
+                    this.$apply()
+                })
+            }
+        }
+
+        setCurrentScrollBottom () {
+            let self = this
+            wx.createSelectorQuery().select('.scroll-list').fields({
+                scrollOffset: true
+            }, function (res) {
+                self.currentScTop = res.scrollTop
+            }).exec()
+        }
+
+        setCurrentScrollTop () {
+            let self = this
+            wx.createSelectorQuery().select('.scroll-list').fields({
+                scrollOffset: true
+            }, function (res) {
+                console.log(res.scrollTop)
+                self.currentScTop = res.scrollTop
+            }).exec()
+        }
+    }
+</script>
+<style lang="less">
+    .co-goods-list {
+        background-color: #fff;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 320rpx;
+        padding-bottom: 320rpx;
+        font-size: 28rpx;
+
+        .hide{
+            display:none !important;
+        }
+        .scroll-list {
+            height: 100%;
+            background-color: #fff;
+            .goodsItem {
+                height: 316rpx;
+                border-bottom:2rpx solid #DEDEDE;
+                margin: 0 28rpx;
+                display: flex;
+                position:relative;
+
+                image {
+                    width: 274rpx;
+                    height: 274rpx;
+                    margin-top: 26rpx;
+                    margin-left: 8rpx;
+                }
+                .goods-info {
+                    margin-top: 42rpx;
+                    margin-left: 26rpx;
+                    .goods-name {
+                        font-size: 28rpx;
+                        color: #3E3E3E;
+                        letter-spacing: 0.34rpx;
+                    }
+                    .goods-sale-price {
+                        color: #fd504a;
+                        text {
+                            font-size: 36rpx;
+                            letter-spacing: 0.34rpx;
+                            line-height: 34rpx;
+                        }
+                    }
+                    .goods-price {
+                        font-size: 28rpx;
+                        color: #B7B7B7;
+                        letter-spacing: 0.34rpx;
+                        margin-left: 24rpx;
+                    }
+                }
+                .buy-goods{
+                    text-align:right;
+                    position:absolute;
+                    right:30rpx;
+                    bottom:30rpx;
+
+                    image{
+                        height:64rpx;
+                        width:64rpx;
+                        margin-left:0;
+                    }
+                    .add-car{
+                        width:100rpx;
+                        text-align:center;
+                        display:inline-block;
+                        margin-top:0;
+
+                    }
+                    .add-num{
+                        .current-num{
+                            display:inline-block;
+                            height:64rpx;
+                            width:64rpx;
+                            text-align:center;
+                            vertical-align: middle;
+                            font-size: 28rpx;
+                            color: #686868;
+                            letter-spacing: 0.34rpx;
+                        }
+                    }
+                }
+
+            }
+
+            .pullup, .pulldown {
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #EDF2F5;
+            }
+        }
+    }
+</style>
+

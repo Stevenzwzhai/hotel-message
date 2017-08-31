@@ -1,0 +1,111 @@
+<template>
+    <view class="co-tab">
+        <view class="tabs-container" @tap="changeTab">
+            <repeat for="{{tabList}}" index="index" key="index" item="item">
+                <view data-id="{{index}}">
+                    <view data-id="{{index}}" class="tab-item {{index == currentItem ? 'tab-item-press' : ''}}">{{item.name}}</view>
+                </view>
+            </repeat>
+        </view>
+        <view class="tabs-container-item">
+            <swiper current="{{currentItem}}" @change="itemChange">
+                <swiper-item>
+                    <view style="height:100%">
+                        <slot name="name1"></slot>
+                    </view>
+                </swiper-item>
+                <swiper-item>
+                    <view class="tab-item-view">
+                        <slot name="name2"></slot>
+                    </view>
+                </swiper-item>
+                <swiper-item>
+                    <view style="height:100%">
+                        <slot name="name3"></slot>
+                    </view>
+                </swiper-item>
+                <swiper-item>
+                    <view style="height:100%">
+                        <slot name="name4"></slot>
+                    </view>
+                </swiper-item>
+            </swiper>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    export default class extends wepy.component {
+        data = {
+            imgUrls: [
+
+            ],
+            currentItem: 0
+        }
+
+        props = {
+            tabList: Array
+        }
+
+        methods = {
+            itemChange(e) {
+                this.currentItem = e.detail.current
+            },
+            changeTab(e) {
+                if(e.target.dataset.id == this.currentItem){
+                    return
+                }
+                this.currentItem = e.target.dataset.id
+            }
+        }
+    }
+</script>
+<style lang="less">
+    .co-tab{
+        height:100%;
+        .tabs-container{
+            display:flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            height:100rpx;
+            background-color:#fff;
+
+
+            view{
+                min-width:25%;
+                height:100%;
+                display:flex;
+                align-items:center;
+                justify-content: center;
+            }
+            .tab-item{
+                font-size: 28rpx;
+                color: #686868;
+                letter-spacing: 0;
+                line-height: 32rpx;
+            }
+            .tab-item-press{
+                font-size: 32rpx;
+                color: #3CBAFF;
+                letter-spacing: 0;
+                line-height: 32rpx;
+                border-bottom: 4rpx solid #3CBAFF;
+            }
+        }
+        .tabs-container-item{
+            padding-top:120rpx;
+            margin-top:-100rpx;
+            height:100%;
+
+            swiper{
+                height:100%;
+                swiper-item{
+                    overflow-y: inherit;
+                }
+                .tab-item-view{
+                    overflow-y: scroll;
+                }
+            }
+        }
+    }
+</style>

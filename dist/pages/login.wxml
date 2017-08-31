@@ -1,0 +1,45 @@
+
+    <view class="co-login">
+        <view class="header">
+            <img src="" alt="" class="logo"/>
+            <view class="content">
+                <rich-text class="title">云订货</rich-text>
+                <rich-text class="article">让订货更简单高效</rich-text>
+            </view>
+        </view>
+        <view class="container">
+            <form bindsubmit="submit" class="form">
+                <view class="form-group">
+                    <input name="tel" type="number" bindfocus="validate" placeholder="手机号"/>
+                </view>
+                <view class="form-group form-bt">
+                    <input name="password" password placeholder="密码"/>
+                </view>
+                <view class="form-btn">
+                    <button formType="submit" disabled="{{valid}}" loading="{{loading}}">登录</button>
+                    <view>
+                        <text class="forget-pw">忘记密码</text>
+                    </view>
+                </view>
+            </form>
+        </view>
+        <view class="footer">
+            <rich-text>公司电话：0755-8888888</rich-text>
+            <rich-text>公司地址：广东省深圳市金蝶软件园</rich-text>
+        </view>
+        
+    <view class="wetoast {{$toast$reveal ? 'wetoast_show' : ''}}">
+        <view class="wetoast__mask"/>
+        <view class="wetoast__bd" animation="{{$toast$animationData}}">
+            <block  wx:if="{{$toast$img}}">
+                <view class="wetoast__bd__img {{$toast$imgClassName || ''}}">
+                    <image class="wetoast__bd__img_desc" src="{{$toast$img}}" mode="{{$toast$imgMode || 'scaleToFill'}}"/>
+                </view>
+            </block>
+            <block  wx:if="{{$toast$title}}">
+                <view class="wetoast__bd__title {{$toast$titleClassName || ''}}">{{$toast$title}}</view>
+            </block>
+        </view>
+    </view>
+
+    </view>

@@ -1,0 +1,80 @@
+<template>
+    <view class="co-goods-header">
+        <repeat for="{{catalog}}" index="index" item="item" key="key">
+            <view class="catalog-list">
+                <view class="list-img">
+                    <image src="{{item.icon}}" @error="dealErr" @load="dealLoad"></image>
+                </view>
+                <rich-text>{{item.name}}</rich-text>
+            </view>
+        </repeat>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    export default class extends wepy.component{
+
+        onLoad() {
+            this.catalog = [{
+                name: '再次购买',
+                icon: this.imgBaseUrl + 'fund.png'
+            },{
+                name: '我的收藏',
+                icon: this.imgBaseUrl + 'hm_spr.png'
+            },{
+                name: '营销活动',
+                icon: this.imgBaseUrl + 'member.png'
+            },{
+                name: '平台公告',
+                icon: this.imgBaseUrl + 'order.png'
+            }]
+        }
+
+        data = {
+            imgBaseUrl: '../../../static/images/',
+            catalog: []
+        }
+
+        methods = {
+            dealLoad(e){
+                console.log(1)
+            },
+            dealErr(e){
+                console.log(2, e.detail)
+            }
+        }
+    }
+</script>
+<style lang="less">
+    .co-goods-header{
+        height:200rpx;
+        background-color:#fff;
+        display:flex;
+        flex-direction: row;
+        flex-wrap:nowrap;
+        .catalog-list{
+            height:200rpx;
+            /*display:flex;*/
+            /*align-items:center;*/
+            /*justify-content: center;*/
+            min-width:25%;
+            font-size: 26rpx;
+            color: #3E3E3E;
+            letter-spacing: 0.32rpx;
+            text-align:center;
+            padding-top:44rpx;
+
+            .list-img{
+                padding-bottom:30rpx;
+                image{
+                    height:56rpx;
+                    width:56rpx;
+                }
+            }
+
+            rich-text{
+                width:100%;
+            }
+        }
+    }
+</style>

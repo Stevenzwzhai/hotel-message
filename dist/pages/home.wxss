@@ -1,0 +1,4 @@
+@import "./../components/home/co-list.wxss";
+@import "./../components/home/co-header.wxss";
+@import "./../components/home/co-search.wxss";
+.co-home{background-color:#EDF2F5;height:100%}

@@ -1,0 +1,3 @@
+@import "./../components/car/co-goodsItem.wxss";
+@import "./../components/car/co-tab.wxss";
+.co-car{height:100%;background-color:#EDF2F5}

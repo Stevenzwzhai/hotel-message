@@ -1,0 +1,120 @@
+<style lang="less">
+    view{
+        box-sizing:border-box;
+    }
+    page{
+        height:100%;
+    }
+</style>
+
+<script>
+    import wepy from 'wepy'
+    import 'wepy-async-function'
+    import wxValidate from './utils/wxValidate'
+    import utils from './utils'
+    Object.assign(wepy, utils)
+    export default class extends wepy.app {
+        config = {
+            pages: [
+//                'pages/login',
+//                'pages/index',
+                'pages/home',
+                'pages/car',
+                'pages/goods',
+                'pages/me'
+            ],
+            window: {
+                backgroundTextStyle: 'dark',
+                navigationBarBackgroundColor: '#3CBAFF',
+                navigationBarTitleText: '云订货',
+                navigationBarTextStyle: 'white',
+                enablePullDownRefresh:false,
+                onReachBottomDistance:50
+            },
+            tabBar: {
+                color: '#A4AAB3',
+                selectedColor: '#3CBAFF',
+                backgroundColor: '#fffefe',
+                borderStyle: '#E7EEF3',
+                list: [{
+                    pagePath: 'pages/home',
+                    text: '首页',
+                    iconPath: './static/images/ic_home_gray.png',
+                    selectedIconPath:'./static/images/ic_home_blue.png'
+                },{
+                    pagePath: 'pages/goods',
+                    text: '商品',
+                    iconPath: './static/images/ic_goods_gray.png',
+                    selectedIconPath:'./static/images/ic_goods_blue.png'
+                },{
+                    pagePath: 'pages/car',
+                    text: '订货车',
+                    iconPath: './static/images/ic_shopping_gray.png',
+                    selectedIconPath:'./static/images/ic_shopping_blue.png'
+                },{
+                    pagePath: 'pages/me',
+                    text: '我的',
+                    iconPath: './static/images/ic_mine_gray.png',
+                    selectedIconPath:'./static/images/ic_mine_blue.png'
+                }]
+            }
+        }
+
+        globalData = {
+            userInfo: null
+        }
+
+        constructor() {
+            super()
+            this.use('requestfix')
+            this.intercept('request', {
+                config (p) {
+                    console.log(p);
+                    return p;
+                },
+                success (p) {
+                    console.log('request success');
+                    return p;
+                },
+                fail (p) {
+                    console.log('request error');
+                    return p;
+                }
+            })
+        }
+
+        onLaunch() {
+            this.testAsync()
+        }
+
+        sleep(s) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve('promise resolved')
+                }, s * 1000)
+            })
+        }
+
+        async testAsync() {
+            const data = await this.sleep(3)
+            console.log(data)
+        }
+
+        wxValidate (rules, messages){
+            return new wxValidate(rules, messages)
+        }
+
+        getUserInfo(cb) {
+            const that = this
+            if (this.globalData.userInfo) {
+                return this.globalData.userInfo
+            }
+            wepy.getUserInfo({
+                success(res) {
+                    that.globalData.userInfo = res.userInfo
+                    cb && cb(res.userInfo)
+                }
+            })
+        }
+    }
+</script>

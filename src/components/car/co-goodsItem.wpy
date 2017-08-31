@@ -1,0 +1,128 @@
+<template>
+    <view class="co-car-goods-item">
+        <view class="header">
+            {{goodsInfo.name}}
+        </view>
+        <view class="container">
+            <view class="imgs">
+                <repeat for="{{goodsInfo.images}}" item="item" index="index" key="key">
+                    <image src="{{item}}"></image>
+                </repeat>
+            </view>
+            <view class="infos">
+                <view class="date">
+                    {{goodsInfo.date}}
+                </view>
+                <view>
+                    <view class="type">
+                        共 {{goodsInfo.typeNum}} 种
+                    </view>
+                    <view class="price">
+                        ¥{{goodsInfo.price}}
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="footer">
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{buyLoading}}" plain="true"
+                    disabled="{{disabled}}" > 再次购买 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{buyLoading}}" plain="true"
+                    disabled="{{disabled}}" > 取消订单 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal btn-mark" loading="{{buyLoading}}" plain="true"
+                    disabled="{{disabled}}" > 立即付款 </button>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+  export default class extends wepy.component {
+        props = {
+            goodsInfo: Object
+        }
+
+        data = {
+            buyLoading: false,
+            disabled:false
+        }
+  }
+</script>
+<style lang="less">
+    .co-car-goods-item{
+        background-color:#fff;
+        margin-bottom:20rpx;
+        height:400rpx;
+        .header{
+            height:66rpx;
+            font-size: 28rpx;
+            color: #3E3E3E;
+            letter-spacing: 0.34rpx;
+            padding:0 32rpx 0 24rpx;
+            display:flex;
+            align-items:center;
+        }
+        .container{
+            .imgs{
+                height:180rpx;
+                padding:22rpx 32rpx 22rpx 24rpx;
+                background-color:#F4F7F9;
+                image{
+                    height:136rpx;
+                    width:136rpx;
+                    border-right:4rpx solid #fff;
+                }
+            }
+            .infos{
+                height:58rpx;
+                padding:0 32rpx 0 24rpx;
+                display:flex;
+                align-items:center;
+                justify-content: space-between;
+                border-bottom: 1rpx solid #DEDEDE;
+
+                .date{
+                    font-size: 24rpx;
+                    color: #A3A3A3;
+                    letter-spacing: 0.28rpx;
+                }
+                .type{
+                    font-size: 28rpx;
+                    color: #3E3E3E;
+                    letter-spacing: 0.34rpx;
+                    display:inline-block;
+                    vertical-align: middle;
+                }
+                .price{
+                    font-size: 32rpx;
+                    color: #FF473A;
+                    letter-spacing: 0.44rpx;
+                    line-height: 38rpx;
+                    margin-left:12rpx;
+                    display:inline-block;
+                    vertical-align: middle;
+                }
+            }
+        }
+        .footer{
+            text-align:right;
+            padding:14rpx 32rpx 0 0;
+
+            .btn-normal{
+                border: 1rpx solid #BDBDBD;
+                color: #4A4A4A;
+                border-radius: 6rpx;
+                font-size: 24rpx;
+                letter-spacing: 0;
+                line-height: 56rpx;
+                margin-left:20rpx;
+                height:56rpx;
+                width:144rpx;
+                padding:0;
+            }
+            .btn-mark{
+                border: 1rpx solid #FF473B;
+                color: #FF473B;
+            }
+
+        }
+    }
+</style>

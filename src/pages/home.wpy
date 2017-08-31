@@ -1,0 +1,43 @@
+<template>
+    <view class="co-home">
+        <coSearch></coSearch>
+        <coHeader></coHeader>
+        <coList :itemHeight="itemHeight"></coList>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import coSearch from '../components/home/co-search'
+    import coHeader from '../components/home/co-header'
+    import coList from '../components/home/co-list'
+    export default class extends wepy.page {
+        components= {
+            coSearch,
+            coHeader,
+            coList
+        }
+
+        data= {
+            itemHeight: 0
+        }
+
+        onReady() {
+            let self = this;
+            wx.createSelectorQuery().select('.goodsItem').fields({
+                size: true
+            }, function (res) {
+                console.log(res)
+                self.itemHeight = res.height
+                self.$broadcast('setHeight', {
+                    height:res.height
+                })
+            }).exec()
+        }
+    }
+</script>
+<style lang="less">
+    .co-home{
+        background-color:#EDF2F5;
+        height:100%;
+    }
+</style>

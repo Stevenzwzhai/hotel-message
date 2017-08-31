@@ -1,0 +1,178 @@
+
+    <view class="co-car">
+        
+    <view class="co-tab">
+        <view class="tabs-container" bindtap="$tabs$changeTab">
+            <block wx:for="{{$tabs$tabList}}" wx:for-index="$tabs$index" wx:for-item="$tabs$item" wx:key="$tabs$index">
+                <view data-id="{{$tabs$index}}">
+                    <view data-id="{{$tabs$index}}" class="tab-item {{$tabs$index == $tabs$currentItem ? 'tab-item-press' : ''}}">{{$tabs$item.name}}</view>
+                </view>
+            </block>
+        </view>
+        <view class="tabs-container-item">
+            <swiper current="{{$tabs$currentItem}}" bindchange="$tabs$itemChange">
+                <swiper-item>
+                    <view style="height:100%">
+                        <view>
+                <block wx:for="{{goodsList}}" wx:for-index="index" wx:for-item="item" wx:key="item">
+                    
+    <view class="co-car-goods-item">
+        <view class="header">
+            {{item.name}}
+        </view>
+        <view class="container">
+            <view class="imgs">
+                <block wx:for="{{item.images}}" wx:for-index="$goodsCarItem$index" wx:for-item="$goodsCarItem$item" wx:key="$goodsCarItem$key">
+                    <image src="{{$goodsCarItem$item}}"/>
+                </block>
+            </view>
+            <view class="infos">
+                <view class="date">
+                    {{item.date}}
+                </view>
+                <view>
+                    <view class="type">
+                        共 {{item.typeNum}} 种
+                    </view>
+                    <view class="price">
+                        ¥{{item.price}}
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="footer">
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 再次购买 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 取消订单 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal btn-mark" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 立即付款 </button>
+        </view>
+    </view>
+
+                </block>
+            </view>
+                    </view>
+                </swiper-item>
+                <swiper-item>
+                    <view class="tab-item-view">
+                        <view>
+                <block wx:for="{{goodsList}}" wx:for-index="index" wx:for-item="item" wx:key="item">
+                    
+    <view class="co-car-goods-item">
+        <view class="header">
+            {{item.name}}
+        </view>
+        <view class="container">
+            <view class="imgs">
+                <block wx:for="{{item.images}}" wx:for-index="$goodsCarItem$index" wx:for-item="$goodsCarItem$item" wx:key="$goodsCarItem$key">
+                    <image src="{{$goodsCarItem$item}}"/>
+                </block>
+            </view>
+            <view class="infos">
+                <view class="date">
+                    {{item.date}}
+                </view>
+                <view>
+                    <view class="type">
+                        共 {{item.typeNum}} 种
+                    </view>
+                    <view class="price">
+                        ¥{{item.price}}
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="footer">
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 再次购买 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 取消订单 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal btn-mark" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 立即付款 </button>
+        </view>
+    </view>
+
+                </block>
+            </view>
+                    </view>
+                </swiper-item>
+                <swiper-item>
+                    <view style="height:100%">
+                        <view>
+                <block wx:for="{{goodsList}}" wx:for-index="index" wx:for-item="item" wx:key="item">
+                    
+    <view class="co-car-goods-item">
+        <view class="header">
+            {{item.name}}
+        </view>
+        <view class="container">
+            <view class="imgs">
+                <block wx:for="{{item.images}}" wx:for-index="$goodsCarItem$index" wx:for-item="$goodsCarItem$item" wx:key="$goodsCarItem$key">
+                    <image src="{{$goodsCarItem$item}}"/>
+                </block>
+            </view>
+            <view class="infos">
+                <view class="date">
+                    {{item.date}}
+                </view>
+                <view>
+                    <view class="type">
+                        共 {{item.typeNum}} 种
+                    </view>
+                    <view class="price">
+                        ¥{{item.price}}
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="footer">
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 再次购买 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 取消订单 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal btn-mark" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 立即付款 </button>
+        </view>
+    </view>
+
+                </block>
+            </view>
+                    </view>
+                </swiper-item>
+                <swiper-item>
+                    <view style="height:100%">
+                        <view>
+                <block wx:for="{{goodsList}}" wx:for-index="index" wx:for-item="item" wx:key="item">
+                    
+    <view class="co-car-goods-item">
+        <view class="header">
+            {{item.name}}
+        </view>
+        <view class="container">
+            <view class="imgs">
+                <block wx:for="{{item.images}}" wx:for-index="$goodsCarItem$index" wx:for-item="$goodsCarItem$item" wx:key="$goodsCarItem$key">
+                    <image src="{{$goodsCarItem$item}}"/>
+                </block>
+            </view>
+            <view class="infos">
+                <view class="date">
+                    {{item.date}}
+                </view>
+                <view>
+                    <view class="type">
+                        共 {{item.typeNum}} 种
+                    </view>
+                    <view class="price">
+                        ¥{{item.price}}
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="footer">
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 再次购买 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 取消订单 </button>
+            <button type="default" size="mini" hover-stop-propagation="true" class="btn-normal btn-mark" loading="{{$goodsCarItem$buyLoading}}" plain="true" disabled="{{$goodsCarItem$disabled}}"> 立即付款 </button>
+        </view>
+    </view>
+
+                </block>
+            </view>
+                    </view>
+                </swiper-item>
+            </swiper>
+        </view>
+    </view>
+
+    </view>

@@ -1,0 +1,97 @@
+<template>
+    <view class="co-car">
+        <tabs :tabList="tabList">
+            <view slot="name1">
+                <repeat for="{{goodsList}}" index="index" item="item" key="item">
+                    <goodsCarItem :goodsInfo="item"></goodsCarItem>
+                </repeat>
+            </view>
+            <view slot="name2">
+                <repeat for="{{goodsList}}" index="index" item="item" key="item">
+                    <goodsCarItem :goodsInfo="item"></goodsCarItem>
+                </repeat>
+            </view>
+            <view slot="name3">
+                <repeat for="{{goodsList}}" index="index" item="item" key="item">
+                    <goodsCarItem :goodsInfo="item"></goodsCarItem>
+                </repeat>
+            </view>
+            <view slot="name4">
+                <repeat for="{{goodsList}}" index="index" item="item" key="item">
+                    <goodsCarItem :goodsInfo="item"></goodsCarItem>
+                </repeat>
+            </view>
+        </tabs>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import tabs from '../components/car/co-tab'
+    import goodsCarItem from '../components/car/co-goodsItem'
+    export default class extends wepy.page {
+
+        config = {
+                enablePullDownRefresh: true
+        }
+
+        onLoad() {
+            this.canRefresh = true
+        }
+
+        data = {
+            tabList: [{
+                name: '全部',
+                id: 'name1',
+                img: 'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg'
+            },{
+                name: '待支付',
+                id: 'name2',
+                img: 'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg'
+            },{
+                name: '待发货',
+                id: 'name3',
+                img: 'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
+            },{
+                name: '待收货',
+                id: 'name4',
+                img: 'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
+            }],
+            goodsList: [{
+                id: 1,
+                name: 'PT201708092639528',
+                date: '2017-8-3 12:15:11',
+                price: 12,
+                status: 1,
+                typeNum:3,
+                images: ['http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg','http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg','http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg']
+            }]
+        }
+
+        components = {
+            tabs,
+            goodsCarItem
+        }
+
+        onPullDownRefresh() {
+            console.info('onPullDownRefresh')
+            wepy.showLoading({
+                title: '加载中',
+            })
+            setTimeout(() => {
+                wepy.hideLoading()
+                wepy.stopPullDownRefresh()
+            }, 2000)
+        }
+
+        onReachBottom() {
+            console.info('onReachBottom')
+
+        }
+    }
+</script>
+<style lang="less">
+    .co-car{
+        height:100%;
+        background-color:#EDF2F5;
+    }
+</style>
